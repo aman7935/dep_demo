@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Save User</title>
+</head>
+<body>
+    <div class="container">
+        <h2>Add User</h2>
+        <input type="text" id="name" placeholder="Name">
+        <input type="email" id="email" placeholder="Email">
+        <button onclick="saveUser()">Save</button>
+        <p id="response"></p>
+    </div>
+
+    <script>
+        async function saveUser() {
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const responseElement = document.getElementById("response");
+
+            try {
+                const response = await fetch("http://localhost:8000/users", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ name, email })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    responseElement.textContent = result.message || "User saved successfully!";
+                    responseElement.style.color = "green";
+                } else {
+                    responseElement.textContent = result.message || "Failed to save user";
+                    responseElement.style.color = "red";
+                }
+            } catch (error) {
+                responseElement.textContent = "Network error. Please try again.";
+                responseElement.style.color = "red";
+                console.error("Error:", error);
+            }
+        }
+    </script>
+</body>
+</html>
